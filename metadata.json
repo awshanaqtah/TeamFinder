@@ -1,0 +1,5 @@
+{
+  "name": "Group Project Finder",
+  "description": "An intelligent tool that helps students find relevant group project ideas based on their major, specialization, and skills, powered by the Gemini API.",
+  "requestFramePermissions": []
+}
