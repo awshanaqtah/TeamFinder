@@ -4,6 +4,7 @@ interface CompatibilityBadgeProps {
   score: number;
   matchDetails: {
     majorMatch: boolean;
+    specializationMatch?: boolean;
     sharedSkills: string[];
   };
 }
@@ -26,6 +27,11 @@ const CompatibilityBadge: React.FC<CompatibilityBadgeProps> = ({ score, matchDet
       {matchDetails.majorMatch && (
         <span className="bg-sky-500/20 text-sky-400 text-xs px-2 py-1 rounded-full border border-sky-500/30">
           Same Major
+        </span>
+      )}
+      {matchDetails.specializationMatch && (
+        <span className="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded-full border border-emerald-500/30">
+          Same Specialization
         </span>
       )}
       <span className="bg-indigo-500/20 text-indigo-400 text-xs px-2 py-1 rounded-full border border-indigo-500/30">

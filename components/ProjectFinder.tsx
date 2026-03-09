@@ -1,8 +1,6 @@
 import React from 'react';
 import { ProjectIdea, Major, Profile } from '../types';
 import ProjectCard from './ProjectCard';
-import Spinner from './Spinner';
-import TeammateResults from './TeammateResults';
 
 interface ProjectFinderProps {
   profile: Profile;
@@ -10,17 +8,8 @@ interface ProjectFinderProps {
   specializations: string[];
   selectedSpecialization: string;
   onSpecializationChange: (value: string) => void;
-  onFindProjects: () => void;
   projectIdeas: ProjectIdea[];
-  isLoading: boolean;
-  error: string | null;
-  selectedProject: ProjectIdea | null;
-  foundTeammates: Profile[];
   onSelectProject: (project: ProjectIdea) => void;
-  onClearSelection: () => void;
-  team: Profile[];
-  onAddTeammate: (teammate: Profile) => void;
-  onRemoveTeammate: (teammateName: string) => void;
 }
 
 const ProjectFinder: React.FC<ProjectFinderProps> = ({
@@ -29,36 +18,14 @@ const ProjectFinder: React.FC<ProjectFinderProps> = ({
   specializations,
   selectedSpecialization,
   onSpecializationChange,
-  onFindProjects,
   projectIdeas,
-  isLoading,
-  error,
-  selectedProject,
-  foundTeammates,
   onSelectProject,
-  onClearSelection,
-  team,
-  onAddTeammate,
-  onRemoveTeammate,
 }) => {
   const isReady = major && specializations.length > 0;
-  const isFindDisabled = !profile.name || !profile.skills || !selectedSpecialization || isLoading;
-
-  if (selectedProject) {
-    return (
-      <div className="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 animate-slide-in-up">
-        <TeammateResults
-          project={selectedProject}
-          suggestedTeammates={foundTeammates}
-          onClear={onClearSelection}
-          currentUser={profile}
-          team={team}
-          onAddTeammate={onAddTeammate}
-          onRemoveTeammate={onRemoveTeammate}
-        />
-      </div>
-    );
-  }
+  const hasSkills = Array.isArray(profile.skills)
+    ? profile.skills.length > 0
+    : profile.skills.trim().length > 0;
+  const canShowProjects = Boolean(selectedSpecialization && hasSkills);
 
   return (
     <div className="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 animate-slide-in-up" style={{ animationDelay: '100ms' }}>
@@ -81,35 +48,27 @@ const ProjectFinder: React.FC<ProjectFinderProps> = ({
             ))}
           </select>
         </div>
-        <button
-          onClick={onFindProjects}
-          disabled={isFindDisabled}
-          className="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-md hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500 disabled:opacity-50 disabled:cursor-wait transition duration-300"
-        >
-          {isLoading ? 'Generating Ideas...' : 'Find Projects'}
-        </button>
       </div>
 
       <div className="mt-8">
-        {isLoading && (
-          <div className="flex justify-center items-center py-10">
-            <Spinner />
+        {!selectedSpecialization && (
+          <div className="text-center py-8 text-slate-400 bg-slate-900/30 rounded-lg border border-slate-700">
+            <p>Pick a specialization to see matching project ideas.</p>
           </div>
         )}
-        {error && (
-          <div className="bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-md" role="alert">
-            <p className="font-bold">Oops!</p>
-            <p className="text-sm">{error}</p>
+        {selectedSpecialization && !hasSkills && (
+          <div className="text-center py-8 text-slate-400 bg-slate-900/30 rounded-lg border border-slate-700">
+            <p>Add your skills in the profile section to unlock preset projects.</p>
           </div>
         )}
-        {!isLoading && !error && projectIdeas.length === 0 && (
-          <div className="text-center py-10 text-slate-400">
-            <p>Your project ideas will appear here.</p>
+        {canShowProjects && projectIdeas.length === 0 && (
+          <div className="text-center py-8 text-slate-400 bg-slate-900/30 rounded-lg border border-slate-700">
+            <p>No preset projects are configured for this specialization yet.</p>
           </div>
         )}
-        {projectIdeas.length > 0 && (
+        {canShowProjects && projectIdeas.length > 0 && (
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-white">Suggested Projects:</h3>
+            <h3 className="text-xl font-semibold text-white">Preset Projects for {selectedSpecialization}</h3>
             {projectIdeas.map((idea, index) => (
               <ProjectCard key={index} idea={idea} index={index} onSelect={onSelectProject} />
             ))}

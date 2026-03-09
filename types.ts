@@ -1,13 +1,14 @@
 export enum Major {
-  AIDS = 'AI/DS',
-  CSCYS = 'CS/CYS',
-  CISBIT = 'CIS/BIT',
+  AIDS = 'AI / Data Science',
+  CSCYS = 'CS / Cybersecurity',
+  CISBIT = 'CIS / Business IT',
 }
 
 export interface Profile {
   name: string;
   skills: string | string[]; // Backward compatible
   major: Major | '';
+  specialization?: string;
   selectedProjectTitle?: string;
   isAvailable?: boolean;
   teamProjectTitle?: string;
@@ -17,6 +18,7 @@ export interface ScoredProfile extends Profile {
   score: number;
   matchDetails: {
     majorMatch: boolean;
+    specializationMatch?: boolean;
     sharedSkills: string[];
   };
 }

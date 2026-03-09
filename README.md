@@ -30,3 +30,29 @@ This contains everything you need to run your app locally.
 1. **Install dependencies:**
    ```bash
    npm install
+   ```
+2. **Start dev server:**
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## Pylint Application (Python)
+
+A small CLI application is included in `pylint_app/` that uses the `pylint` library programmatically.
+
+### Install Python dependency
+```bash
+python -m pip install -r requirements-pylint-app.txt
+```
+
+### Run the app
+```bash
+python -m pylint_app pylint_app
+```
+
+### Optional flags
+```bash
+python -m pylint_app pylint_app --min-score 8.0 --json-out reports/pylint-report.json
+```

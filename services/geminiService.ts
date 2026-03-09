@@ -4,6 +4,7 @@ import { ProjectIdea } from '../types';
 export const getProjectIdeas = async (
   major: string,
   specialization: string,
+  projectType: string,
   skills: string | string[]
 ): Promise<ProjectIdea[]> => {
   if (!process.env.API_KEY) {
@@ -23,9 +24,11 @@ export const getProjectIdeas = async (
     Student Profile:
     - Major: ${major}
     - Specialization: ${specialization}
+    - Preferred Project Type: ${projectType}
     - Key Skills: ${formatSkills(skills) || 'Not specified'}
 
     Each project should be suitable for a small team and completable within a semester.
+    Every idea must align with the preferred project type.
     For each project, provide:
     - A catchy title
     - A one-sentence description of the project goal

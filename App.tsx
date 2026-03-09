@@ -4,9 +4,8 @@ import Header from './components/Header';
 import ProfileSection from './components/ProfileSection';
 import ProjectFinder from './components/ProjectFinder';
 import TeammateResults from './components/TeammateResults';
-import { getProjectIdeas } from './services/geminiService';
-import { findTeammates, searchTeammatesByName } from './services/teammateService';
-import { SPECIALIZATIONS } from './constants';
+import { findTeammates } from './services/teammateService';
+import { SPECIALIZATIONS, getPresetProjectsForSpecialization } from './constants';
 import OnboardingTooltip, { OnboardingStep } from './components/OnboardingTooltip';
 
 const App: React.FC = () => {
@@ -21,12 +20,9 @@ const App: React.FC = () => {
   // Specialization state
   const [specializations, setSpecializations] = useState<string[]>([]);
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>('');
-
   // Project state
   const [projectIdeas, setProjectIdeas] = useState<ProjectIdea[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectIdea | null>(null);
-  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
-  const [projectError, setProjectError] = useState<string | null>(null);
 
   // Teammate state
   const [foundTeammates, setFoundTeammates] = useState<ScoredProfile[]>([]);
@@ -50,7 +46,7 @@ const App: React.FC = () => {
     {
       id: 'projects',
       title: 'Explore Project Ideas',
-      content: 'Browse AI-generated project suggestions based on your profile. Each project includes detailed information like scope, suggested tech stack, and difficulty level. Click on projects to see full details.'
+      content: 'Browse preset project pools based on your selected specialization and skills. Each project includes scope, suggested stack, and difficulty level. Click a project to continue to teammate matching.'
     },
     {
       id: 'teammates',
@@ -67,8 +63,28 @@ const App: React.FC = () => {
     } else {
       setSpecializations([]);
       setSelectedSpecialization('');
+      setProjectIdeas([]);
+      setSelectedProject(null);
+      setFoundTeammates([]);
     }
   }, [profile.major]);
+
+  // Load preset project pool once specialization is selected and skills are entered.
+  useEffect(() => {
+    const hasSkills = Array.isArray(profile.skills)
+      ? profile.skills.length > 0
+      : profile.skills.trim().length > 0;
+
+    if (profile.major && selectedSpecialization && hasSkills) {
+      const presets = getPresetProjectsForSpecialization(profile.major as Major, selectedSpecialization);
+      setProjectIdeas(presets);
+      return;
+    }
+
+    setProjectIdeas([]);
+    setSelectedProject(null);
+    setFoundTeammates([]);
+  }, [profile.major, selectedSpecialization, profile.skills]);
 
   // Initialize onboarding on first visit
   useEffect(() => {
@@ -84,36 +100,22 @@ const App: React.FC = () => {
 
   const handleMajorChange = (major: Major | '') => {
     setProfile(prev => ({ ...prev, major }));
+    setSelectedSpecialization('');
+    setSelectedProject(null);
+    setFoundTeammates([]);
+    setTeam([]);
   };
 
   const handleSpecializationChange = (value: string) => {
     setSelectedSpecialization(value);
-  };
-
-  const handleFindProjects = async () => {
-    if (!profile.name || !profile.skills || !selectedSpecialization) {
-      setProjectError('Please complete your profile first.');
-      return;
-    }
-
-    setIsLoadingProjects(true);
-    setProjectError(null);
-
-    try {
-      const ideas = await getProjectIdeas(profile.major, selectedSpecialization, profile.skills);
-      setProjectIdeas(ideas);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-      setProjectError('Failed to generate project ideas. Please try again.');
-    } finally {
-      setIsLoadingProjects(false);
-    }
+    setSelectedProject(null);
+    setFoundTeammates([]);
   };
 
   const handleSelectProject = (project: ProjectIdea) => {
     setSelectedProject(project);
-    // Find compatible teammates based on user profile
-    const teammates = findTeammates(profile);
+    // Find compatible teammates based on major, specialization, and shared skills.
+    const teammates = findTeammates(profile, selectedSpecialization);
     setFoundTeammates(teammates);
   };
 
@@ -177,17 +179,8 @@ const App: React.FC = () => {
               specializations={specializations}
               selectedSpecialization={selectedSpecialization}
               onSpecializationChange={handleSpecializationChange}
-              onFindProjects={handleFindProjects}
               projectIdeas={projectIdeas}
-              isLoading={isLoadingProjects}
-              error={projectError}
-              selectedProject={selectedProject}
-              foundTeammates={foundTeammates}
               onSelectProject={handleSelectProject}
-              onClearSelection={handleClearSelection}
-              team={team}
-              onAddTeammate={handleAddTeammate}
-              onRemoveTeammate={handleRemoveTeammate}
             />
           </div>
 

@@ -9,12 +9,20 @@ const parseSkills = (skills: string | string[]): string[] => {
   return skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 };
 
+const normalizeText = (value?: string): string => (value || '').trim().toLowerCase();
+
 /**
  * A weighted scoring algorithm to find the most compatible teammates.
- * Score is based on major alignment and shared skills.
+ * Score is based on major alignment, specialization alignment, and shared skills.
  */
-export const findTeammates = (currentUser: Profile): ScoredProfile[] => {
+export const findTeammates = (
+  currentUser: Profile,
+  currentUserSpecialization?: string
+): ScoredProfile[] => {
   const currentUserSkills = new Set(parseSkills(currentUser.skills));
+  const normalizedCurrentSpecialization = normalizeText(
+    currentUserSpecialization || currentUser.specialization
+  );
 
   const scoredProfiles = MOCK_PROFILES
     .filter(p => p.name !== currentUser.name) // Exclude current user
@@ -25,10 +33,18 @@ export const findTeammates = (currentUser: Profile): ScoredProfile[] => {
       // 1. Major Alignment Score (high weight)
       const majorMatch = profile.major === currentUser.major;
       if (majorMatch) {
-        score += 50;
+        score += 40;
       }
 
-      // 2. Skill Relevance Score (lower weight per skill)
+      // 2. Specialization Alignment Score (medium-high weight)
+      const specializationMatch =
+        normalizedCurrentSpecialization.length > 0 &&
+        normalizedCurrentSpecialization === normalizeText(profile.specialization);
+      if (specializationMatch) {
+        score += 25;
+      }
+
+      // 3. Skill Relevance Score
       const profileSkills = parseSkills(profile.skills);
       const sharedSkills: string[] = [];
       profileSkills.forEach(skill => {
@@ -43,6 +59,7 @@ export const findTeammates = (currentUser: Profile): ScoredProfile[] => {
         score,
         matchDetails: {
           majorMatch,
+          specializationMatch,
           sharedSkills
         }
       };
