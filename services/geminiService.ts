@@ -4,22 +4,34 @@ import { ProjectIdea } from '../types';
 export const getProjectIdeas = async (
   major: string,
   specialization: string,
-  skills: string
+  skills: string | string[]
 ): Promise<ProjectIdea[]> => {
   if (!process.env.API_KEY) {
     throw new Error("API_KEY environment variable is not set.");
   }
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+  const formatSkills = (skills: string | string[]): string => {
+    if (Array.isArray(skills)) {
+      return skills.join(', ');
+    }
+    return skills;
+  };
+
   const prompt = `
     Generate 4 innovative and practical group project ideas for a university student.
     Student Profile:
     - Major: ${major}
     - Specialization: ${specialization}
-    - Key Skills: ${skills || 'Not specified'}
+    - Key Skills: ${formatSkills(skills) || 'Not specified'}
 
     Each project should be suitable for a small team and completable within a semester.
-    Provide a concise title and a one-sentence description for each project.
+    For each project, provide:
+    - A catchy title
+    - A one-sentence description of the project goal
+    - A scope section (2-3 sentences explaining project scope and deliverables)
+    - A suggested technology stack (recommended tools, frameworks, or languages)
+    - A difficulty level (Beginner, Intermediate, or Advanced)
   `;
 
   try {
@@ -45,8 +57,20 @@ export const getProjectIdeas = async (
                     type: Type.STRING,
                     description: 'A brief, one-sentence description of the project goal.',
                   },
+                  scope: {
+                    type: Type.STRING,
+                    description: '2-3 sentences explaining project scope and deliverables.',
+                  },
+                  suggestedStack: {
+                    type: Type.STRING,
+                    description: 'Recommended tools, frameworks, or languages.',
+                  },
+                  difficulty: {
+                    type: Type.STRING,
+                    description: 'The difficulty level: Beginner, Intermediate, or Advanced.',
+                  },
                 },
-                required: ['title', 'description'],
+                required: ['title', 'description', 'scope', 'suggestedStack', 'difficulty'],
               },
             },
           },

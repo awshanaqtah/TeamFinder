@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Profile, Major } from '../types';
+import SkillInput from './SkillInput';
+import ProfilePreviewCard from './ProfilePreviewCard';
 
 interface ProfileSectionProps {
   profile: Profile;
@@ -8,9 +10,30 @@ interface ProfileSectionProps {
 }
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, onProfileChange, onMajorChange }) => {
+  const [showPreview, setShowPreview] = useState(false);
+
+  const handleSkillsChange = (skills: string[]) => {
+    onProfileChange('skills', skills.join(', '));
+  };
+
   return (
     <div className="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 animate-slide-in-up">
-      <h2 className="text-2xl font-semibold text-white mb-6">Your Profile</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-white">Your Profile</h2>
+        <button
+          onClick={() => setShowPreview(!showPreview)}
+          className="text-sky-400 hover:text-sky-300 text-sm transition"
+        >
+          {showPreview ? 'Hide Preview' : 'Preview Profile'}
+        </button>
+      </div>
+
+      {showPreview && (
+        <div className="mb-6">
+          <ProfilePreviewCard profile={profile} />
+        </div>
+      )}
+
       <div className="space-y-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
@@ -47,14 +70,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, onProfileChang
           <label htmlFor="skills" className="block text-sm font-medium text-slate-300 mb-2">
             Skills <span className="text-red-500">*</span>
           </label>
-          <textarea
-            id="skills"
-            rows={4}
-            value={profile.skills}
-            onChange={(e) => onProfileChange('skills', e.target.value)}
-            placeholder="List your key skills, e.g., Python, SQL, Data Analysis"
-            required
-            className="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-white placeholder-slate-400 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+          <SkillInput
+            skills={profile.skills}
+            onChange={handleSkillsChange}
+            major={profile.major}
+            placeholder="Type to add skills..."
           />
         </div>
       </div>

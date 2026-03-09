@@ -1,8 +1,11 @@
 import { MOCK_PROFILES } from '../data/mockProfiles';
-import { Profile } from '../types';
+import { Profile, ScoredProfile, FilterOptions } from '../types';
 
-// Helper to parse skills string into a clean array
-const parseSkills = (skills: string): string[] => {
+// Helper to parse skills (supports both string and string[] for backward compatibility)
+const parseSkills = (skills: string | string[]): string[] => {
+  if (Array.isArray(skills)) {
+    return skills.map(s => s.trim().toLowerCase()).filter(Boolean);
+  }
   return skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 };
 
@@ -10,30 +13,39 @@ const parseSkills = (skills: string): string[] => {
  * A weighted scoring algorithm to find the most compatible teammates.
  * Score is based on major alignment and shared skills.
  */
-export const findTeammates = (currentUser: Profile): Profile[] => {
+export const findTeammates = (currentUser: Profile): ScoredProfile[] => {
   const currentUserSkills = new Set(parseSkills(currentUser.skills));
 
   const scoredProfiles = MOCK_PROFILES
     .filter(p => p.name !== currentUser.name) // Exclude current user
+    .filter(p => p.isAvailable !== false) // Filter out unavailable profiles
     .map(profile => {
       let score = 0;
 
       // 1. Major Alignment Score (high weight)
-      if (profile.major === currentUser.major) {
+      const majorMatch = profile.major === currentUser.major;
+      if (majorMatch) {
         score += 50;
       }
 
       // 2. Skill Relevance Score (lower weight per skill)
       const profileSkills = parseSkills(profile.skills);
-      let commonSkills = 0;
+      const sharedSkills: string[] = [];
       profileSkills.forEach(skill => {
         if (currentUserSkills.has(skill)) {
-          commonSkills++;
+          sharedSkills.push(skill);
         }
       });
-      score += commonSkills * 10; // 10 points for each common skill
+      score += sharedSkills.length * 10; // 10 points for each common skill
 
-      return { ...profile, score };
+      return {
+        ...profile,
+        score,
+        matchDetails: {
+          majorMatch,
+          sharedSkills
+        }
+      };
     })
     .filter(p => p.score > 0); // Only show profiles with some compatibility
 
@@ -42,14 +54,43 @@ export const findTeammates = (currentUser: Profile): Profile[] => {
 };
 
 /**
- * Searches for teammates by name.
+ * Filters teammates based on filter options.
  */
-export const searchTeammatesByName = (query: string, currentUser: Profile): Profile[] => {
+export const filterTeammates = (
+  profiles: Profile[],
+  filters: FilterOptions
+): Profile[] => {
+  return profiles.filter(profile => {
+    if (filters.major && profile.major !== filters.major) {
+      return false;
+    }
+    if (filters.minSkillMatch !== undefined) {
+      // This would need skill count calculation in the future
+      // For now, we'll return true
+    }
+    return true;
+  });
+};
+
+/**
+ * Searches for teammates by name with optional filters.
+ */
+export const searchTeammatesByName = (
+  query: string,
+  currentUser: Profile,
+  filters?: FilterOptions
+): Profile[] => {
   if (!query.trim()) {
     return [];
   }
   const lowercasedQuery = query.toLowerCase();
-  return MOCK_PROFILES.filter(
+  let results = MOCK_PROFILES.filter(
     p => p.name !== currentUser.name && p.name.toLowerCase().includes(lowercasedQuery)
   );
+
+  if (filters) {
+    results = filterTeammates(results, filters);
+  }
+
+  return results;
 };
