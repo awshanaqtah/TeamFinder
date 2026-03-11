@@ -64,7 +64,28 @@ class CheckResult:
 
 
 def _ruff_executable() -> str:
-    """Return 'ruff' or raise if not found."""
+    """Return the path to the ruff binary, or '' if not found."""
+    # When running as a PyInstaller bundle, look for the bundled ruff binary.
+    if getattr(sys, "frozen", False):
+        candidates: list[Path] = []
+        meipass = getattr(sys, "_MEIPASS", None)
+        if meipass:
+            candidates.append(Path(meipass) / "ruff.exe")
+        candidates.append(Path(sys.executable).parent / "ruff.exe")
+
+        for candidate in candidates:
+            if candidate.is_file():
+                try:
+                    subprocess.run(
+                        [str(candidate), "--version"],
+                        capture_output=True,
+                        check=True,
+                    )
+                    return str(candidate)
+                except (OSError, subprocess.CalledProcessError):
+                    continue
+
+    # Normal (non-frozen) execution: ruff on PATH
     try:
         subprocess.run(
             ["ruff", "--version"],

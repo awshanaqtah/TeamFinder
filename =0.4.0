@@ -1,0 +1,4 @@
+Requirement already satisfied: ruff in c:\users\awsha\appdata\local\programs\python\python311\lib\site-packages (0.15.5)
+
+[notice] A new release of pip is available: 25.3 -> 26.0.1
+[notice] To update, run: C:\Users\awsha\AppData\Local\Programs\Python\Python311\python.exe -m pip install --upgrade pip

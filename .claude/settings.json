@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(python build_exe.py)",
+      "Bash(where ruff:*)",
+      "Bash(python -c \"import sys; print\\(sys.executable\\)\")",
+      "Bash(pip --version)",
+      "Bash(C:/Users/awsha/AppData/Local/Programs/Python/Python311/python.exe -m PyInstaller --version)",
+      "Bash(\"C:/Users/awsha/AppData/Local/Programs/Python/Python311/python.exe\" build_exe.py)",
+      "Bash(d:/TeamFinder/tools/dist/code_checker.exe --help)",
+      "Bash(d:/TeamFinder/tools/dist/code_checker.exe d:/TeamFinder/tools/code_checker/cli.py)",
+      "Bash(d:/TeamFinder/tools/dist/code_checker.exe d:/TeamFinder/tools/code_checker/cli.py --no-color)",
+      "Bash(rustc --version)",
+      "Bash(cargo --version)",
+      "Bash(chmod +x d:/TeamFinder/setup.sh)",
+      "Bash(cmd //c setup.bat)",
+      "Bash(cmd //c \".\\\\setup.bat\")",
+      "Read(//c/Users/awsha/AppData/Local/Temp/claude/d--TeamFinder/tasks/**)",
+      "Bash(ls d:/TeamFinder/src-tauri/target/release/bundle/nsis/*.exe)"
+    ]
+  }
+}

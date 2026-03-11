@@ -27,6 +27,10 @@ __pycache__/
 *.pyc
 *.pyo
 
+# PyInstaller build artifacts
+tools/build/
+tools/*.spec
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
