@@ -18,7 +18,8 @@ Complete technical documentation for the TeamFinder platform.
 10. [Mobile Build (Capacitor)](#mobile-build-capacitor)
 11. [Environment Variables](#environment-variables)
 12. [Code Quality Tool](#code-quality-tool)
-13. [Troubleshooting](#troubleshooting)
+13. [Pull Request Guide](#pull-request-guide)
+14. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -575,6 +576,23 @@ Score = max(0.0, 10.0 - errors*0.5 - warnings*0.2 - conventions*0.05)
 ```
 
 A score of 10.0 means no issues found.
+
+---
+
+## Pull Request Guide
+
+Full PR standards, templates, and review process are documented in a dedicated file:
+
+**[PULL_REQUESTS.md](PULL_REQUESTS.md)**
+
+Covers:
+- **Branch naming** — `feat/`, `fix/`, `refactor/`, `docs/`, `chore/`, `hotfix/`
+- **Commit message format** — `<type>: <imperative summary>`
+- **PR template** — copy-paste template with summary, changes, test plan, checklist
+- **PR checklist** — code quality, security, React best practices, services, database
+- **Review process** — author responsibilities, reviewer guidelines, merge rules
+- **Labels** — `feature`, `bug`, `refactor`, `docs`, `ui`, `security`, `breaking`
+- **Real examples** — feature PR, bug fix PR, refactor PR with full bodies
 
 ---
 
