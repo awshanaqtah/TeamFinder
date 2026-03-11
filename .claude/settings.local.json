@@ -4,7 +4,12 @@
       "Bash(npm run dev)",
       "Bash(taskkill /F /IM node.exe)",
       "Bash(git add -A)",
-      "Bash(git commit -m \"feat: Implement all 10 TeamFinder features:*)"
+      "Bash(git commit -m \"feat: Implement all 10 TeamFinder features:*)",
+      "Bash(grep -r \"animate-\" /d/TeamFinder/*.css /d/TeamFinder/index.html)",
+      "Bash(npm run build)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3002\")",
+      "WebSearch"
     ]
   }
 }

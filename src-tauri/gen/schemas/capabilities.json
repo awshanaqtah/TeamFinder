@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Default capabilities for TeamFinder desktop app","local":true,"windows":["main"],"permissions":["core:default","fs:default","fs:allow-write-text-file","fs:allow-read-text-file","store:default","global-shortcut:default","opener:default","dialog:default","dialog:allow-save"]}}

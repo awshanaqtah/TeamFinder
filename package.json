@@ -6,14 +6,38 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "cap:sync": "cap sync",
+    "cap:android": "cap open android",
+    "cap:ios": "cap open ios",
+    "mobile:build": "npm run build && npm run cap:sync"
   },
   "dependencies": {
+    "@capacitor/android": "^6",
+    "@capacitor/core": "^6",
+    "@capacitor/filesystem": "^6",
+    "@capacitor/haptics": "^6",
+    "@capacitor/ios": "^6",
+    "@capacitor/preferences": "^6",
+    "@capacitor/share": "^6",
+    "@capacitor/splash-screen": "^6",
+    "@google/genai": "^1.28.0",
+    "@supabase/supabase-js": "^2.99.0",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2",
+    "@tauri-apps/plugin-fs": "^2",
+    "@tauri-apps/plugin-global-shortcut": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-store": "^2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@google/genai": "^1.28.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.2.0",
+    "@tauri-apps/cli": "^2",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",

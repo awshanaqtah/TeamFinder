@@ -11,6 +11,21 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+
+# Rust / Tauri build output
+src-tauri/target/
+
+# Android build output
+android/.gradle/
+android/app/build/
+android/build/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
 
 # Editor directories and files
 .vscode/*

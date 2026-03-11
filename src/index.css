@@ -1,0 +1,100 @@
+/* Global stylesheet loaded from index.html */
+
+/* Scale-up hover effect */
+.hover-scale-up {
+  transition: transform 0.2s ease-out;
+}
+
+.hover-scale-up:hover {
+  transform: scale(1.05);
+}
+
+/* Hover glow effect */
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+}
+
+/* Card hover lift */
+.card-hover-lift {
+  transition: all 0.2s ease-out;
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Skill tag glow */
+.skill-tag-glow {
+  transition: all 0.2s ease-out;
+}
+
+.skill-tag-glow:hover {
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+
+/* Badge glow */
+.badge-glow {
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  .hover-scale-up:hover {
+    transform: none;
+  }
+
+  .hover-glow:hover {
+    box-shadow: none;
+  }
+
+  .card-hover-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .skill-tag-glow:hover {
+    box-shadow: none;
+  }
+}
+
+/* Touch-friendly minimum sizes (44px Apple/48px Material guidelines) */
+@media (pointer: coarse) {
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Ensure clickable elements have adequate spacing */
+  button:not(:last-child),
+  a:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  .app-container,
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Prevent text selection on mobile (better UX for buttons) */
+@media (pointer: coarse) {
+  button,
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
